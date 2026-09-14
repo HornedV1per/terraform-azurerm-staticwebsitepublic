@@ -12,9 +12,20 @@ resource "random_string" "myrandom" {
 }
 
 # Create Resource Group
-resource "azurerm_resource_group" "resource_group" {
+# Create Resource Group
+resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
+}
+
+# Azure Storage Account
+resource "azurerm_storage_account" "storage_account" {
+  name                     = "${var.storage_account_name}${random_string.myrandom.id}"
+  resource_group_name      = azurerm_resource_group.rg.name # Implicit dependency
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = var.storage_account_tier
+  account_replication_type = var.storage_account_replication_type
+  account_kind             = var.storage_account_kind
 }
 
 # Azure Storage Account Resource
